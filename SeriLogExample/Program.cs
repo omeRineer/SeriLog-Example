@@ -5,8 +5,10 @@ using Serilog.Events;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
 Log.Logger=new LoggerConfiguration()
-    .WriteTo.Console()
+    .WriteTo.Console(restrictedToMinimumLevel:LogEventLevel.Information)
+    .WriteTo.File($"LogEvents/Error-{DateTime.Today}.txt",restrictedToMinimumLevel:LogEventLevel.Error)
     .CreateLogger();
 
 builder.Services.AddControllers();
@@ -24,10 +26,10 @@ builder.Services.AddSwaggerGen();
  *                              servisini ekler.Yani bu þekilde kullanýldýðýnda hem .Net Core kendi loglamasýný
  *                              yaparken hemde ayrýca serilog kendi loglamasýný çalýþtýrýr.
  */
-builder.Services.AddLogging(x =>
-{
-    x.AddSerilog();
-});
+//builder.Services.AddLogging(x =>
+//{
+//    x.AddSerilog();
+//});
 
 
 
@@ -59,6 +61,11 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+
+/*
+ Serilogdaki default request loglarýný daha düzenli ve tek satýrda loglamasý için geliþtirilmiþ bir middleware
+ yapýsýdýr.
+ */
 //app.UseSerilogRequestLogging();
 
 app.MapControllers();
